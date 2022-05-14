@@ -1,0 +1,92 @@
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.75em;
+}
+
+#root{
+	width: 80%;
+}
+
+.skills-title {
+	font-weight: bold;
+	padding-left: 10px;
+	text-transform: capitalize;
+}
+
+.header-container {
+	align-content: center;
+	text-align: center;
+	padding: 10px 0px;
+}
+
+.header-title {
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 1.5em;
+}
+
+.header-subtext {
+	font-size: 0.9em;
+	font-style: italic;
+}
+
+.break {
+	height: 0px;
+	flex-basis: 100%;
+}
+.skills-container {
+	padding-top: 5px;
+}
+
+.job-container,
+.education-container {
+	padding-top: 5px;
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+
+.job-company,
+.education-school {
+	font-weight: bold;
+}
+
+.job-location,
+.education-location {
+	font-weight: bold;
+}
+
+.job-name,
+.degree-name {
+	font-weight: bold;
+	font-style: italic;
+	padding-left: 10px;
+}
+
+.job-dates,
+.education-dates {
+	font-style: italic;
+}
+
+.job-items ul,
+.skills-items ul {
+	margin: 3px;
+}
+
+.section-container {
+	flex-direction: column;
+	padding-bottom: 5px;
+}
+
+.section-title {
+	text-transform: uppercase;
+	font-weight: bold;
+	border-bottom: 1px solid black;
+}
+
+.version-notice{
+	margin-top: 15px;
+	font-size: .75em;
+	font-style: italic;
+	text-align: center;
+}
