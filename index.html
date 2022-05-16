@@ -1,195 +1,44 @@
 <html>
 	<head>
 		<link rel="stylesheet" href="css/resume.css" />
+		<script src="js/builder.js"></script>
+		<script>
+			const resumeDataUrl =
+				'https://mmrichards.com/resume-common/resume_data.json';
+			const version = 0.12;
+
+			document.addEventListener('DOMContentLoaded', loadResume, false);
+
+			function loadResume() {
+				const resumeDataUrl =
+					'https://mmrichards.com/resume-common/resume_data.json';
+
+				fetch(resumeDataUrl)
+					.then((response) => response.json())
+					.then((resume) => buildResume(resume));
+
+				setVersion(version);
+			}
+
+			function buildResume(resume) {
+				const root = document.querySelector('.resume-container');
+				const builder = new ResumeBuilder();
+				builder.build(resume, root);
+			}
+
+			function setVersion(v) {
+				const versionNotice = document.querySelector('.version-notice');
+				versionNotice.textContent = `resume-nolib v${v}`;
+			}
+		</script>
 		<title></title>
 	</head>
 	<body>
 		<div id="root">
 			<div class="resume-container"></div>
-			<div class="version-notice">resume-nolib v0.1</div>
+			<div class="version-notice"></div>
 		</div>
 
-		<script type="text/javascript">
-			fetch('https://mmrichards.com/resume-common/resume_data.json')
-				.then((response) => response.json())
-				.then((resume) => buildResume(resume));
-
-			function buildResume(resume) {
-				if (resume) {
-					window.document.title = resume.name ? resume.name : 'Resume';
-
-					const resumeRootElement = document.querySelector('.resume-container');
-
-					buildHeader(resume, resumeRootElement);
-					buildSkills(resume.skills, resumeRootElement);
-					buildExperience(resume.jobs, resumeRootElement);
-					buildEducation(resume.education, resumeRootElement);
-				}
-			}
-
-			function buildEducation(education, parent) {
-				if (education && education.length) {
-					const educationSection = createDiv(
-						'education-section',
-						null,
-						createSection('Education', parent)
-					);
-
-					for (const edItem of education) {
-						let container = createDiv(
-							'education-container',
-							null,
-							educationSection
-						);
-						createDiv('education-school', edItem.name, container);
-						createDiv('education-location', edItem.location, container);
-						addBreak(container);
-						createDiv('education-degree', edItem.degree, container);
-						createDiv('education-dates', edItem.dates, container);
-					}
-				}
-			}
-
-			function buildHeader(resume, parent) {
-				const headerContainer = createDiv('header-container', null, parent);
-				createDiv('header-title', resume.name, headerContainer);
-				createDiv(
-					'header-subtext',
-					`${resume.location} - ${resume.email} - Tel: ${resume.telephone}`,
-					headerContainer
-				);
-			}
-
-			function buildSkills(skills, resumeRootElement) {
-				if (skills) {
-					const skillsElement = createSection('Skills', resumeRootElement);
-					const skillsContainer = createDiv(
-						'skills-container',
-						null,
-						skillsElement
-					);
-
-					for (let skillGroup in skills) {
-						createDiv('skills-title', skillGroup, skillsContainer);
-						const items = skills[skillGroup];
-						const itemsContainer = createDiv(
-							'skills-items',
-							null,
-							skillsContainer
-						);
-						createList(items, itemsContainer);
-						addBreak(skillsContainer);
-					}
-				}
-			}
-
-			function buildExperience(jobs, resumeRootElement) {
-				if (jobs && jobs.length) {
-					const experienceSectionElement = createSection(
-						'Experience',
-						resumeRootElement
-					);
-
-					let lastJob = null;
-					let jobElement = null;
-					for (const job of jobs) {
-						if (!lastJob || lastJob.companyName !== job.companyName) {
-							jobElement = createDiv(
-								'job-container',
-								null,
-								experienceSectionElement
-							);
-							createDiv('job-company', job.companyName, jobElement);
-							createDiv('job-location', job.location, jobElement);
-							addBreak(jobElement);
-						}
-
-						createDiv('job-name', job.title, jobElement);
-						addJobDates(job, jobElement);
-						addBreak(jobElement);
-						addJobItems(job, jobElement);
-
-						lastJob = job;
-					}
-				}
-			}
-
-			function addJobItems(job, parent) {
-				if (!job.items) return;
-
-				const itemsContainer = createDiv('job-items', null, parent);
-				createList(job.items, itemsContainer);
-			}
-
-			function addJobDates(job, parent) {
-				if (job.startDate) {
-					createDiv(
-						'job-dates',
-						`${getDateString(job.startDate)} - ${getDateString(job.endDate)}`,
-						parent
-					);
-				}
-
-				return parent;
-			}
-
-			function getDateString(date) {
-				if (!date) return 'Present';
-
-				if (date instanceof Date) {
-					return date.toLocaleDateString(undefined, {
-						year: 'numeric',
-						month: 'short',
-					});
-				} else {
-					return date.toString();
-				}
-			}
-
-			function createList(items, parent) {
-				const root = createListRoot(null, parent);
-				if (items) {
-					items.forEach(function (i) {
-						createListItem(null, i, root);
-					});
-				}
-				return root;
-			}
-
-			function createSection(title, parent) {
-				const root = createDiv('section-container', null, parent);
-				if (title) createDiv('section-title', title, root);
-				return root;
-			}
-
-			function addBreak(parent) {
-				if (parent) {
-					const brk = document.createElement('div');
-					brk.className = 'break';
-					parent.appendChild(brk);
-				}
-				return parent;
-			}
-
-			function createListRoot(className, parent) {
-				return createAndAppendElement('ul', className, null, parent);
-			}
-
-			function createListItem(className, text, parent) {
-				return createAndAppendElement('li', className, text, parent);
-			}
-
-			function createDiv(className, text, parent) {
-				return createAndAppendElement('div', className, text, parent);
-			}
-
-			function createAndAppendElement(elementType, className, text, parent) {
-				const el = document.createElement(elementType);
-				if (className) el.className = className;
-				if (text) el.textContent = text;
-				if (parent) parent.appendChild(el);
-				return el;
-			}
-		</script>
+		<script type="text/javascript"></script>
 	</body>
 </html>
