@@ -4,19 +4,19 @@ class ResumeBuilder {
         if ( resume ) {
             window.document.title = resume.name ? resume.name : 'Resume';
 
-            this.buildHeader( resume, rootElement );
-            this.buildSkills( resume.skills, rootElement );
-            this.buildExperience( resume.jobs, rootElement );
-            this.buildEducation( resume.education, rootElement );
+            this.#buildHeader( resume, rootElement );
+            this.#buildSkills( resume.skills, rootElement );
+            this.#buildExperience( resume.jobs, rootElement );
+            this.#buildEducation( resume.education, rootElement );
         }
     }
 
-    buildEducation( education, parent ) {
+    #buildEducation( education, parent ) {
         if ( education && education.length ) {
             const educationSection = HtmlBuilder.createDiv(
                 'education-section',
                 null,
-                this.createSection( 'Education', parent )
+                this.#createSection( 'Education', parent )
             );
 
             for ( const edItem of education ) {
@@ -34,7 +34,7 @@ class ResumeBuilder {
         }
     }
 
-    buildHeader( resume, parent ) {
+    #buildHeader( resume, parent ) {
         const headerContainer = HtmlBuilder.createDiv( 'header-container', null, parent );
         HtmlBuilder.createDiv( 'header-title', resume.name, headerContainer );
         HtmlBuilder.createDiv(
@@ -44,9 +44,9 @@ class ResumeBuilder {
         );
     }
 
-    buildSkills( skills, resumeRootElement ) {
+    #buildSkills( skills, resumeRootElement ) {
         if ( skills ) {
-            const skillsElement = this.createSection( 'Skills', resumeRootElement );
+            const skillsElement = this.#createSection( 'Skills', resumeRootElement );
             const skillsContainer = HtmlBuilder.createDiv(
                 'skills-container',
                 null,
@@ -67,9 +67,9 @@ class ResumeBuilder {
         }
     }
 
-    buildExperience( jobs, resumeRootElement ) {
+    #buildExperience( jobs, resumeRootElement ) {
         if ( jobs && jobs.length ) {
-            const experienceSectionElement = this.createSection(
+            const experienceSectionElement = this.#createSection(
                 'Experience',
                 resumeRootElement
             );
@@ -89,27 +89,27 @@ class ResumeBuilder {
                 }
 
                 HtmlBuilder.createDiv( 'job-name', job.title, jobElement );
-                this.addJobDates( job, jobElement );
+                this.#addJobDates( job, jobElement );
                 HtmlBuilder.addBreak( jobElement );
-                this.addJobItems( job, jobElement );
+                this.#addJobItems( job, jobElement );
 
                 lastJob = job;
             }
         }
     }
 
-    addJobItems( job, parent ) {
+    #addJobItems( job, parent ) {
         if ( !job.items ) return;
 
         const itemsContainer = HtmlBuilder.createDiv( 'job-items', null, parent );
         HtmlBuilder.createList( job.items, itemsContainer );
     }
 
-    addJobDates( job, parent ) {
+    #addJobDates( job, parent ) {
         if ( job.startDate ) {
             HtmlBuilder.createDiv(
                 'job-dates',
-                `${this.getDateString( job.startDate )} - ${this.getDateString( job.endDate )}`,
+                `${this.#getDateString( job.startDate )} - ${this.#getDateString( job.endDate )}`,
                 parent
             );
         }
@@ -117,7 +117,7 @@ class ResumeBuilder {
         return parent;
     }
 
-    getDateString( date ) {
+    #getDateString( date ) {
         if ( !date ) return 'Present';
 
         if ( date instanceof Date ) {
@@ -130,7 +130,7 @@ class ResumeBuilder {
         }
     }
 
-    createSection( title, parent ) {
+    #createSection( title, parent ) {
         const root = HtmlBuilder.createDiv( 'section-container', null, parent );
         if ( title ) HtmlBuilder.createDiv( 'section-title', title, root );
         return root;
@@ -168,6 +168,14 @@ class HtmlBuilder {
 
     static createDiv( className, text, parent ) {
         return HtmlBuilder.createAndAppendElement( 'div', className, text, parent );
+    }
+
+    static createLink( text, url ) {
+        const link = document.createElement( 'a' );
+        link.textContent = text;
+        link.href = url;
+        link.target = '_blank';
+        return link;
     }
 
     static createAndAppendElement( elementType, className, text, parent ) {

@@ -28,7 +28,11 @@
 
 			function setVersion(v) {
 				const versionNotice = document.querySelector('.version-notice');
-				versionNotice.textContent = `resume-nolib v${v}`;
+				const link = HtmlBuilder.createLink(
+					`resume-nolib v${v}`,
+					'https://github.com/mtrichards26/resume-nolib'
+				);
+				versionNotice.appendChild(link);
 			}
 		</script>
 		<title></title>
