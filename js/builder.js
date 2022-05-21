@@ -37,9 +37,12 @@ class ResumeBuilder {
     #buildHeader( resume, parent ) {
         const headerContainer = HtmlBuilder.createDiv( 'header-container', null, parent );
         HtmlBuilder.createDiv( 'header-title', resume.name, headerContainer );
+        let subText = `${resume.location} - ${resume.email}`;
+        if ( resume.telephone )
+            subText += ` - Tel: ${resume.telephone}`;
         HtmlBuilder.createDiv(
             'header-subtext',
-            `${resume.location} - ${resume.email} - Tel: ${resume.telephone}`,
+            subText,
             headerContainer
         );
     }
