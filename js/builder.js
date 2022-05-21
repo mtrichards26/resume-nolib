@@ -2,11 +2,11 @@ class ResumeBuilder {
 
     build( resume, rootElement ) {
         if ( resume ) {
-            window.document.title = resume.name ? resume.name : 'Resume';
+            window.document.title = resume?.basics?.name ? resume.basics.name : 'Resume';
 
-            this.#buildHeader( resume, rootElement );
+            this.#buildHeader( resume.basics, rootElement );
             this.#buildSkills( resume.skills, rootElement );
-            this.#buildExperience( resume.jobs, rootElement );
+            this.#buildExperience( resume.work, rootElement );
             this.#buildEducation( resume.education, rootElement );
         }
     }
@@ -25,26 +25,38 @@ class ResumeBuilder {
                     null,
                     educationSection
                 );
-                HtmlBuilder.createDiv( 'education-school', edItem.name, container );
-                HtmlBuilder.createDiv( 'education-location', edItem.location, container );
+                HtmlBuilder.createDiv( 'education-school', edItem.institution, container );
                 HtmlBuilder.addBreak( container );
-                HtmlBuilder.createDiv( 'education-degree', edItem.degree, container );
-                HtmlBuilder.createDiv( 'education-dates', edItem.dates, container );
+                HtmlBuilder.createDiv( 'education-degree', `${edItem.studyType} ${edItem.area}`, container );
+                HtmlBuilder.createDiv( 'education-dates', edItem.endDate, container );
             }
         }
     }
 
-    #buildHeader( resume, parent ) {
+    #buildHeader( basics, parent ) {
         const headerContainer = HtmlBuilder.createDiv( 'header-container', null, parent );
-        HtmlBuilder.createDiv( 'header-title', resume.name, headerContainer );
-        let subText = `${resume.location} - ${resume.email}`;
-        if ( resume.telephone )
-            subText += ` - Tel: ${resume.telephone}`;
+        HtmlBuilder.createDiv( 'header-title', basics.name, headerContainer );
+
+        let subText = `${this.#getLocation( basics )} - ${basics.email}`;
+        if ( basics.telephone )
+            subText += ` - Tel: ${basics.telephone}`;
         HtmlBuilder.createDiv(
             'header-subtext',
             subText,
             headerContainer
         );
+    }
+
+    #getLocation( basics ) {
+        let loc = '';
+        if ( basics?.location ) {
+            if ( basics.location.city )
+                loc = basics.location.city;
+
+            if ( basics.location.region )
+                loc = `${loc}, ${basics.location.region}`;
+        }
+        return loc;
     }
 
     #buildSkills( skills, resumeRootElement ) {
@@ -56,9 +68,17 @@ class ResumeBuilder {
                 skillsElement
             );
 
-            for ( let skillGroup in skills ) {
+            const groupedSkills = skills.reduce( ( acc, cur ) => {
+                if ( !acc[ cur.name ] )
+                    acc[ cur.name ] = [];
+
+                acc[ cur.name ].push( cur );
+                return acc;
+            }, {} )
+
+            for ( let skillGroup in groupedSkills ) {
                 HtmlBuilder.createDiv( 'skills-title', skillGroup, skillsContainer );
-                const items = skills[ skillGroup ];
+                const items = groupedSkills[ skillGroup ].map( s => `${s.level}: ${s.keywords.join( ',' )}` );
                 const itemsContainer = HtmlBuilder.createDiv(
                     'skills-items',
                     null,
@@ -80,18 +100,17 @@ class ResumeBuilder {
             let lastJob = null;
             let jobElement = null;
             for ( const job of jobs ) {
-                if ( !lastJob || lastJob.companyName !== job.companyName ) {
+                if ( !lastJob || lastJob.name !== job.name ) {
                     jobElement = HtmlBuilder.createDiv(
                         'job-container',
                         null,
                         experienceSectionElement
                     );
-                    HtmlBuilder.createDiv( 'job-company', job.companyName, jobElement );
-                    HtmlBuilder.createDiv( 'job-location', job.location, jobElement );
+                    HtmlBuilder.createDiv( 'job-company', job.name, jobElement );
                     HtmlBuilder.addBreak( jobElement );
                 }
 
-                HtmlBuilder.createDiv( 'job-name', job.title, jobElement );
+                HtmlBuilder.createDiv( 'job-name', job.position, jobElement );
                 this.#addJobDates( job, jobElement );
                 HtmlBuilder.addBreak( jobElement );
                 this.#addJobItems( job, jobElement );
@@ -102,10 +121,10 @@ class ResumeBuilder {
     }
 
     #addJobItems( job, parent ) {
-        if ( !job.items ) return;
+        if ( !job.highlights ) return;
 
         const itemsContainer = HtmlBuilder.createDiv( 'job-items', null, parent );
-        HtmlBuilder.createList( job.items, itemsContainer );
+        HtmlBuilder.createList( job.highlights, itemsContainer );
     }
 
     #addJobDates( job, parent ) {
@@ -123,14 +142,13 @@ class ResumeBuilder {
     #getDateString( date ) {
         if ( !date ) return 'Present';
 
-        if ( date instanceof Date ) {
-            return date.toLocaleDateString( undefined, {
-                year: 'numeric',
-                month: 'short',
-            } );
-        } else {
-            return date.toString();
-        }
+        const months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
+        const dateLength = date.length;
+        const parsedDate = new Date( date );
+        if ( dateLength < 5 )
+            return parsedDate.getUTCFullYear();
+
+        return `${months[ parsedDate.getUTCMonth() ]} ${parsedDate.getUTCFullYear()}`;
     }
 
     #createSection( title, parent ) {

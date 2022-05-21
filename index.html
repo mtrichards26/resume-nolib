@@ -10,14 +10,12 @@
 			document.addEventListener('DOMContentLoaded', loadResume, false);
 
 			function loadResume() {
-				const resumeDataUrl =
-					'https://mmrichards.com/resume-common/resume_data.json';
-
 				fetch(resumeDataUrl)
 					.then((response) => response.json())
 					.then((resume) => buildResume(resume));
 
 				setVersion(version);
+				setRawDataLink(resumeDataUrl);
 			}
 
 			function buildResume(resume) {
@@ -34,6 +32,14 @@
 				);
 				versionNotice.appendChild(link);
 			}
+			function setRawDataLink(url){
+				const link = HtmlBuilder.createLink(
+					'Raw Resume Data',
+					url
+				);
+				document.querySelector('.raw-link').appendChild( link );
+			}
+
 		</script>
 		<title></title>
 	</head>
@@ -41,6 +47,7 @@
 		<div id="root">
 			<div class="resume-container"></div>
 			<div class="version-notice"></div>
+			<div class="raw-link"></div>
 		</div>
 
 		<script type="text/javascript"></script>

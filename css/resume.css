@@ -84,8 +84,13 @@ body {
 	border-bottom: 1px solid black;
 }
 
-.version-notice{
-	margin-top: 15px;
+.resume-container{
+	margin-bottom: 10px;
+}
+
+.version-notice,
+.raw-link{
+	margin-top: 5px;
 	font-size: .75em;
 	font-style: italic;
 	text-align: center;
