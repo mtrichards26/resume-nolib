@@ -37,6 +37,10 @@ class ResumeBuilder {
         const headerContainer = HtmlBuilder.createDiv( 'header-container', null, parent );
         HtmlBuilder.createDiv( 'header-title', basics.name, headerContainer );
 
+        if ( basics.label ) {
+            HtmlBuilder.createDiv( 'header-label', basics.label, headerContainer );
+        }
+
         let subText = `${this.#getLocation( basics )} - ${basics.email}`;
         if ( basics.telephone )
             subText += ` - Tel: ${basics.telephone}`;
@@ -45,6 +49,10 @@ class ResumeBuilder {
             subText,
             headerContainer
         );
+
+        if ( basics.summary ) {
+            HtmlBuilder.createDiv( 'header-summary', basics.summary, headerContainer );
+        }
     }
 
     #getLocation( basics ) {
@@ -78,7 +86,7 @@ class ResumeBuilder {
 
             for ( let skillGroup in groupedSkills ) {
                 HtmlBuilder.createDiv( 'skills-title', skillGroup, skillsContainer );
-                const items = groupedSkills[ skillGroup ].map( s => `${s.level}: ${s.keywords.join( ',' )}` );
+                const items = groupedSkills[ skillGroup ].map( s => `${s.level}: ${s.keywords.join( ', ' )}` );
                 const itemsContainer = HtmlBuilder.createDiv(
                     'skills-items',
                     null,
