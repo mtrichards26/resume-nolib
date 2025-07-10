@@ -133,6 +133,7 @@ class ResumeBuilder {
 
         const itemsContainer = HtmlBuilder.createDiv( 'job-items', null, parent );
         HtmlBuilder.createList( job.highlights, itemsContainer );
+        HtmlBuilder.addBreak( parent );
     }
 
     #addJobDates( job, parent ) {
