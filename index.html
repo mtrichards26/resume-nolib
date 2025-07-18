@@ -4,15 +4,16 @@
 		<script src="js/builder.js"></script>
 		<script>
 			
-			const resumeDataUrl ='https://api.github.com/gists/966c39d47d9f3dbd1fbabf24deba9fa6';
+			const resumeDataUrl = 'https://raw.githubusercontent.com/mtrichards26/resume-data/main/resume-standard.json';
 			const version = 0.12;
 
 			document.addEventListener('DOMContentLoaded', loadResume, false);
 
 			function loadResume() {
-				fetch(resumeDataUrl, {cache: "no-cache"})
+				fetch(resumeDataUrl, {
+						cache: "no-cache"
+					})
 					.then((response) => response.json())
-					.then((data)=> JSON.parse(data.files['resume.json'].content))
 					.then((resume) => buildResume(resume));
 
 				setVersion(version);
