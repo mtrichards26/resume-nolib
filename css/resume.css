@@ -39,7 +39,6 @@ body {
 	margin-top: 10px;
 	padding: 10px 0px;
 	font-size: 0.9em;
-	font-style: ;
 }
 
 .break {
@@ -101,7 +100,8 @@ body {
 }
 
 .version-notice,
-.raw-link{
+.raw-link,
+.pdf-link{
 	margin-top: 5px;
 	font-size: .75em;
 	font-style: italic;

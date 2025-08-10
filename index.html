@@ -17,6 +17,7 @@
 					.then((resume) => buildResume(resume));
 
 				setVersion(version);
+				setPdfLink();
 				setRawDataLink(resumeDataUrl);
 			}
 
@@ -41,6 +42,14 @@
 				);
 				document.querySelector('.raw-link').appendChild( link );
 			}
+			
+			function setPdfLink(){
+				const link = HtmlBuilder.createLink(
+					'Download PDF',
+					'Matt Richards.pdf'
+				);
+				document.querySelector('.pdf-link').appendChild( link );
+			}
 
 		</script>
 		<title></title>
@@ -48,8 +57,9 @@
 	<body>
 		<div id="root">
 			<div class="resume-container"></div>
-			<div class="version-notice"></div>
+			<div class="pdf-link"></div>
 			<div class="raw-link"></div>
+			<div class="version-notice"></div>
 		</div>
 
 		<script type="text/javascript"></script>
